@@ -8,6 +8,8 @@
     "aws_vpc": {
       "my_vpc": {
         "cidr_block": "10.0.0.0/16",
+        "enable_dns_support": true,
+        "enable_dns_hostnames": true,
         "tags": {
           "Name": "MyVPC"
         }
@@ -38,7 +40,18 @@
         "route": [
           {
             "cidr_block": "0.0.0.0/0",
-            "gateway_id": "${aws_internet_gateway.my_igw.id}"
+            "gateway_id": "${aws_internet_gateway.my_igw.id}",
+            "carrier_gateway_id": "",
+            "destination_prefix_list_id": "",
+            "egress_only_gateway_id": "",
+            "instance_id": "",
+            "ipv6_cidr_block": "",
+            "local_gateway_id": "",
+            "nat_gateway_id": "",
+            "network_interface_id": "",
+            "transit_gateway_id": "",
+            "vpc_endpoint_id": "",
+            "vpc_peering_connection_id": ""
           }
         ],
         "tags": {
@@ -61,6 +74,10 @@
             "to_port": 80,
             "protocol": "tcp",
             "cidr_blocks": ["0.0.0.0/0"],
+            "ipv6_cidr_blocks": [],
+            "prefix_list_ids": [],
+            "security_groups": [],
+            "self": false,
             "description": "Allow HTTP traffic"
           },
           {
@@ -68,6 +85,10 @@
             "to_port": 3389,
             "protocol": "tcp",
             "cidr_blocks": ["0.0.0.0/0"],
+            "ipv6_cidr_blocks": [],
+            "prefix_list_ids": [],
+            "security_groups": [],
+            "self": false,
             "description": "Allow RDP traffic"
           }
         ],
@@ -77,6 +98,10 @@
             "to_port": 0,
             "protocol": "-1",
             "cidr_blocks": ["0.0.0.0/0"],
+            "ipv6_cidr_blocks": [],
+            "prefix_list_ids": [],
+            "security_groups": [],
+            "self": false,
             "description": "Allow all outbound traffic"
           }
         ],
@@ -90,7 +115,7 @@
         "ami": "ami-0c1a7f89451184c8b",
         "instance_type": "t2.micro",
         "subnet_id": "${aws_subnet.my_subnet.id}",
-        "security_groups": ["${aws_security_group.my_sg.name}"],
+        "vpc_security_group_ids": ["${aws_security_group.my_sg.id}"],
         "user_data": "<powershell>Install-WindowsFeature -name Web-Server -IncludeManagementTools; Start-Service W3SVC</powershell>",
         "tags": {
           "Name": "MyWindowsServerWithIIS"
