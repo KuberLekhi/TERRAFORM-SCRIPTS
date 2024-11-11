@@ -4,7 +4,8 @@ provider "aws" {
 
 resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
-
+  enable_dns_support = true
+  enable_dns_hostnames = true
   tags = {
     Name = "MyVPC"
   }
@@ -15,7 +16,6 @@ resource "aws_subnet" "my_subnet" {
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-south-1a"
   map_public_ip_on_launch = true
-
   tags = {
     Name = "MySubnet"
   }
@@ -23,7 +23,6 @@ resource "aws_subnet" "my_subnet" {
 
 resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id
-
   tags = {
     Name = "MyInternetGateway"
   }
@@ -31,12 +30,10 @@ resource "aws_internet_gateway" "my_igw" {
 
 resource "aws_route_table" "my_route_table" {
   vpc_id = aws_vpc.my_vpc.id
-
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.my_igw.id
   }
-
   tags = {
     Name = "MyRouteTable"
   }
@@ -49,7 +46,7 @@ resource "aws_route_table_association" "my_route_table_assoc" {
 
 resource "aws_security_group" "my_sg" {
   vpc_id = aws_vpc.my_vpc.id
-
+  
   ingress {
     from_port   = 80
     to_port     = 80
@@ -83,15 +80,13 @@ resource "aws_instance" "my_instance" {
   ami           = "ami-0c1a7f89451184c8b"
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.my_subnet.id
-  security_groups = [aws_security_group.my_sg.name]
-
+  vpc_security_group_ids = [aws_security_group.my_sg.id]  # Fixed security group reference
   user_data = <<-EOF
               <powershell>
               Install-WindowsFeature -name Web-Server -IncludeManagementTools; 
               Start-Service W3SVC
               </powershell>
               EOF
-
   tags = {
     Name = "MyWindowsServerWithIIS"
   }
