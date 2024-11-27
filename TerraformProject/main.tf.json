@@ -1,0 +1,41 @@
+{
+  "resource": {
+    "aws_s3_bucket": {
+      "my_bucket": {
+        "bucket": "my-webapp-bucket-kuber"
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "my_bucket_public_access_block": {
+        "bucket": "${aws_s3_bucket.my_bucket.id}",
+        "block_public_acls": true,
+        "ignore_public_acls": true,
+        "block_public_policy": false,
+        "restrict_public_buckets": false
+      }
+    },
+    "aws_s3_bucket_website_configuration": {
+      "my_bucket_website": {
+        "bucket": "${aws_s3_bucket.my_bucket.id}",
+        "index_document": {
+          "suffix": "indexx.html"
+        }
+      }
+    },
+    "aws_s3_bucket_policy": {
+      "my_bucket_policy": {
+        "bucket": "${aws_s3_bucket.my_bucket.id}",
+        "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": \"*\", \"Action\": \"s3:GetObject\", \"Resource\": \"arn:aws:s3:::my-webapp-bucket-kuber/*\"}]}"
+      }
+    },
+    "aws_s3_object": {
+      "index": {
+        "bucket": "${aws_s3_bucket.my_bucket.id}",
+        "key": "indexx.html",
+        "source": "C:/Users/ASUS/OneDrive/Pictures/Screenshots/indexx.html",
+        "etag": "${md5(file(\"C:/Users/ASUS/OneDrive/Pictures/Screenshots/indexx.html\"))}",
+        "content_type": "text/html"
+      }
+    }
+  }
+}
